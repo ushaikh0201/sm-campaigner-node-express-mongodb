@@ -24,8 +24,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/auth", auth);
-app.use("/api/user", user);
-app.use("/api/profile", profile);
+// app.use("/api/user", user);
+// app.use("/api/profile", profile);
 
 const port = app.get("port");
 const server = app.listen(port, () =>
