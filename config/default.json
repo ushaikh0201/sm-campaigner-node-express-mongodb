@@ -1,5 +1,13 @@
 {
   "mongoURI": "mongodb://127.0.0.1:27017/campaigner",
   "jwtSecret": "jwtSecretToken",
-  "jwtExpiration": 360000
+  "jwtExpiration": 360000,
+  "facebookRedirectURI": "https://localhost:5000/api/auth/facebook/callback",
+  "fbGraphURI":  "https://graph.facebook.com/v12.0",
+  "providers": {
+    "fb": {
+      "base_uri": "https://graph.facebook.com",
+      "version": "v12.0"  
+    }
+  }
 }

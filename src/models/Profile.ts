@@ -13,6 +13,10 @@ export interface IProfile extends Document {
   firstName: string;
   lastName: string;
   username: string;
+  accessToken: string;
+  provider: string;
+  providerId: string;
+  displayName: string;
 }
 
 const profileSchema: Schema = new Schema({
@@ -20,18 +24,21 @@ const profileSchema: Schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  firstName: {
+  providerId: {
     type: String,
     required: true
   },
-  lastName: {
-    type: String,
-    required: true
+  provider:{
+    type: String
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true
+  displayName: {
+    type: String
+  },
+  accessToken:{
+    type: String
+  },
+  response: {
+    type: Object
   },
   date: {
     type: Date,
@@ -39,6 +46,4 @@ const profileSchema: Schema = new Schema({
   }
 });
 
-const Profile: Model<IProfile> = model("Profile", profileSchema);
-
-export default Profile;
+export default model<IProfile>("Profile", profileSchema);
