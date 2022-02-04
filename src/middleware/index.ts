@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import Request from "../types/Request";
 import Payload from "../types/Payload";
+import Profile from "../models/Profile";
+import { IProfile } from "../models/Profile";
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
   // Get token from header
@@ -40,6 +42,19 @@ export const schema = (schema: any) => {
 
       console.log("error", message);
       res.status(422).json({ error: message });
+    }
+  };
+};
+
+export const checkAuth = (provider: string) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const profile: IProfile = await Profile.findOne({ provider });
+    const isAuthExists = profile && profile.accessToken.length > 0;
+
+    if (!isAuthExists) {
+      next();
+    } else {
+      res.status(422).json({ error: `Already authenticated for ${provider}` });
     }
   };
 };

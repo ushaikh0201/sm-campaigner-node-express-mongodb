@@ -17,6 +17,7 @@ export interface IProfile extends Document {
   provider: string;
   providerId: string;
   displayName: string;
+  response: object;
 }
 
 const profileSchema: Schema = new Schema({

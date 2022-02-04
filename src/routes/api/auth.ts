@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth, schema } from "../../middleware";
+import { auth, schema, checkAuth } from "../../middleware";
 import schemas from "../schemas";
 import AuthController from "../../controllers/AuthController";
 import passportFacebook, {
@@ -7,6 +7,7 @@ import passportFacebook, {
   facebookMePostsCallback,
   facebookMeVideosCallback,
 } from "../../providers/passportFacebook";
+import passportTwitter, {getTwitterBearerToken, twitterAllTweetsCallback} from "../../providers/passportTwitter";
 
 const router: Router = Router();
 
@@ -32,6 +33,7 @@ router.post(
 /* START: FACEBOOK ROUTER */
 router.get(
   "/facebook",
+  checkAuth("fb"),
   passportFacebook.authenticate("facebook", {
     scope: [
       "user_friends",
@@ -48,12 +50,29 @@ router.get(
   (req, res) => res.redirect("/")
 );
 
-router.get("/facebook/me", facebookMeCallback);
+router.get("/facebook/me", auth, facebookMeCallback);
 
-router.get("/facebook/me/posts", facebookMePostsCallback);
+router.get("/facebook/me/posts", auth, facebookMePostsCallback);
 
-router.get("/facebook/me/videos", facebookMeVideosCallback);
+router.get("/facebook/me/videos", auth, facebookMeVideosCallback);
 
 /* END: FACEBOOK ROUTER */
+
+/* START: TWITTER ROUTER */
+router.get(
+  "/twitter",
+  checkAuth("twitter"),
+  passportTwitter.authenticate("twitter")
+);
+router.get(
+  "/twitter/callback",
+  passportTwitter.authenticate("twitter", {
+    failureRedirect: "/login",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
+);
+router.get("/twitter/tweets", auth, twitterAllTweetsCallback);
+/* END: TWITTER ROUTER */
 
 export default router;

@@ -8,14 +8,14 @@ import { getAccessTokenByProvider } from "../controllers/ProfileController";
 import { Response } from "express";
 import Request from "../types/Request";
 
-const FB = config.get("fbGraphURI");
+const FB = config.get("providers.fb.graphURI");
 
 export default passport.use(
   new FacebookStrategy(
     {
-      clientID: config.get("fbClientAppId"),
-      clientSecret: config.get("fbClientSecret"),
-      callbackURL: config.get("facebookRedirectURI"),
+      clientID: config.get("providers.fb.clientAppId"),
+      clientSecret: config.get("providers.fb.clientSecret"),
+      callbackURL: config.get("providers.fb.callbackURL"),
     },
     function (accessToken, refreshToken, profile, done) {
       Profile.create(
