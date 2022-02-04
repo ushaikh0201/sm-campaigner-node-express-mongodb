@@ -1,17 +1,13 @@
-import { Response, Router } from "express";
-
+import { Router } from "express";
 import { auth, schema } from "../../middleware";
 import schemas from "../schemas";
 import AuthController from "../../controllers/AuthController";
-import passportFacebook from "../../providers/passportFacebook";
-import fs from "fs";
-import Profile from "../../models/Profile";
-import axios from "../../axios.config";
-import config from "config";
-import querystring from 'querystring';
-import { getAccessTokenByProvider } from "../../controllers/ProfileController";
+import passportFacebook, {
+  facebookMeCallback,
+  facebookMePostsCallback,
+  facebookMeVideosCallback,
+} from "../../providers/passportFacebook";
 
-const FB = config.get('fbGraphURI');
 const router: Router = Router();
 
 // @route   GET api/auth
@@ -33,75 +29,31 @@ router.post(
   AuthController.register
 );
 
-/* FACEBOOK ROUTER */
+/* START: FACEBOOK ROUTER */
 router.get(
   "/facebook",
   passportFacebook.authenticate("facebook", {
-    scope: ["user_friends", "user_posts", "user_videos", "pages_show_list", "instagram_basic"],
+    scope: [
+      "user_friends",
+      "user_posts",
+      "user_videos",
+      "pages_show_list",
+      "instagram_basic",
+    ],
   })
 );
 router.get(
   "/facebook/callback",
   passportFacebook.authenticate("facebook", { failureRedirect: "/login" }),
-  function (req, res) {
-    Profile.create(
-      { displayName: 'temp', providerId: '123145', accessToken:'dsfj23', response: res },
-      function (err, user) {
-        if (err) {
-          console.error(err);
-        }
-        return user;
-      }
-    );
-    res.redirect("/");
-  }
+  (req, res) => res.redirect("/")
 );
 
-router.get("/facebook/me",async(req, res) => {
-  const access_token = await getAccessTokenByProvider('fb');
-  const query = querystring.stringify({fields: 'id,name', access_token });
-  
-  try {
-    // const isValid = await validateAccessToken(access_token);
-    const result = await axios.get(`${FB}/me?${query}`);
-    if(result.data){
-      return res.json({...result.data});
-    }
-    return new Error('No data found');
-  } catch (error) {
-    res.json(error);
-  }
-});
+router.get("/facebook/me", facebookMeCallback);
 
-router.get("/facebook/me/posts",async(req, res) => {
-  const access_token = await getAccessTokenByProvider('fb');
-  const query = querystring.stringify({access_token });
-  
-  try {
-    const result = await axios.get(`${FB}/me/posts?${query}`);
-    if(result.data){
-      return res.json({...result.data});
-    }
-    return new Error('No data found');
-  } catch (error) {
-    res.json(error);
-  }
-});
+router.get("/facebook/me/posts", facebookMePostsCallback);
 
-router.get("/facebook/me/videos",async(req, res) => {
-  const access_token = await getAccessTokenByProvider('fb');
-  const query = querystring.stringify({access_token });
-  
-  try {
-    const result = await axios.get(`${FB}/me/videos?${query}`);
-    if(result.data){
-      return res.json({...result.data});
-    }
-    return new Error('No data found');
-  } catch (error) {
-    res.json(error);
-  }
-});
+router.get("/facebook/me/videos", facebookMeVideosCallback);
 
+/* END: FACEBOOK ROUTER */
 
 export default router;

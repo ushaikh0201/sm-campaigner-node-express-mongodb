@@ -1,0 +1,8 @@
+# Social media 
+FB_CLIENT_APP_ID = "<Facebook app id>"
+FB_CLIENT_SECRET = "<Facebook client secret>"
+
+
+# Others
+JWT_SECRET = "<token>"
+MONGO_DB_URL = "<mongodb connection url string>"
