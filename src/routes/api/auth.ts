@@ -8,6 +8,7 @@ import passportFacebook, {
   facebookMeVideosCallback,
 } from "../../providers/passportFacebook";
 import passportTwitter, {getTwitterBearerToken, twitterAllTweetsCallback} from "../../providers/passportTwitter";
+import passportLinkedin, { lnAdCampaignCallback, lnShareCallback } from "../../providers/passportLinkedin";
 
 const router: Router = Router();
 
@@ -75,4 +76,18 @@ router.get(
 router.get("/twitter/tweets", auth, twitterAllTweetsCallback);
 /* END: TWITTER ROUTER */
 
+/* START: LINKEDIN ROUTER */
+router.get("/linkedin", passportLinkedin.authenticate("linkedin"));
+
+router.get(
+  "/linkedin/callback",
+  passportLinkedin.authenticate("linkedin", {
+    failureRedirect: "/login",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
+);
+router.post("/linkedin/create-campaign", lnAdCampaignCallback);
+router.post("/linkedin/share", lnShareCallback);
+/* END: LINKEDIN ROUTER */
 export default router;

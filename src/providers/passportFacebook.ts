@@ -8,7 +8,7 @@ import { getAccessTokenByProvider } from "../controllers/ProfileController";
 import { Response } from "express";
 import Request from "../types/Request";
 
-const FB = config.get("providers.fb.graphURI");
+const FB = config.get("providers.fb.endpoint_url");
 
 export default passport.use(
   new FacebookStrategy(

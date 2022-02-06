@@ -9,7 +9,7 @@ import { Response } from "express";
 import Request from "../types/Request";
 import { isEmpty } from "lodash";
 
-const TW_ENDPOINT_URI = config.get("providers.twitter.endpoint_uri");
+const TW_ENDPOINT_URI = config.get("providers.twitter.endpoint_url");
 const TW_OAUTH_URI = config.get("providers.twitter.oauth_uri");
 
 export default passport.use(
